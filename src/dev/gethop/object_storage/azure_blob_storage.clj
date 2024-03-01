@@ -48,7 +48,7 @@
       {:success? false
        :error-details {:reason :could-not-determine-content-length}}
       (let [headers {:x-ms-version "2019-02-02"
-                     :x-ms-date (util/get-current-date-time-in-rfc-1123)
+                     :x-ms-date (util/get-current-date-time-in-http-date-header-format)
                      :x-ms-blob-type "BlockBlob"
                      :Content-Length content-length}
             params {}
@@ -70,7 +70,7 @@
   (let [src-url (util/build-resource-url account container source-object-id)
         dst-url (util/build-resource-url account container destination-object-id)
         headers {:x-ms-version "2019-02-02"
-                 :x-ms-date (util/get-current-date-time-in-rfc-1123)
+                 :x-ms-date (util/get-current-date-time-in-http-date-header-format)
                  :x-ms-copy-source src-url}
         params {}
         authorization-header (auth/build-authorization-header
@@ -88,7 +88,7 @@
 (defn- get-object*
   [{:keys [account container]} object-id _opts]
   (let [headers {:x-ms-version "2019-02-02"
-                 :x-ms-date (util/get-current-date-time-in-rfc-1123)}
+                 :x-ms-date (util/get-current-date-time-in-http-date-header-format)}
         params {}
         authorization-header (auth/build-authorization-header
                               :get params headers account container {:id object-id})
@@ -106,7 +106,7 @@
 (defn- delete-object*
   [{:keys [account container]} object-id opts]
   (let [headers {:x-ms-version "2019-02-02"
-                 :x-ms-date (util/get-current-date-time-in-rfc-1123)}
+                 :x-ms-date (util/get-current-date-time-in-http-date-header-format)}
         params (cond-> {}
                  (not (:permanently-delete? opts))
                  (assoc :deletetype "permanent"))
@@ -182,7 +182,7 @@
 (defn- list-blobs*
   [{:keys [account container]} parent-object-id marker]
   (let [headers {:x-ms-version "2019-02-02"
-                 :x-ms-date (util/get-current-date-time-in-rfc-1123)}
+                 :x-ms-date (util/get-current-date-time-in-http-date-header-format)}
         params (cond-> {:restype "container"
                         :comp "list"}
                  parent-object-id

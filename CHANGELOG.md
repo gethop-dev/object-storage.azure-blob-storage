@@ -4,6 +4,8 @@ file. This change log follows the conventions of
 [keepachangelog.com](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Fixed
+- Fix authentication failing when day of month < 10 [#1]
 
 ## [0.1.0] - 2023-10-27
 - Initial version

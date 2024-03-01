@@ -4,9 +4,9 @@
 
 (ns dev.gethop.object-storage.azure-blob-storage.util
   (:import [java.net URLEncoder]
-           [java.time ZonedDateTime ZoneOffset]
+           [java.time ZonedDateTime ZoneOffset ZoneId]
            [java.time.format DateTimeFormatter]
-           [java.util Base64]
+           [java.util Base64 Locale]
            [javax.crypto Mac]
            [javax.crypto.spec SecretKeySpec]))
 
@@ -28,11 +28,15 @@
     (.init mac (SecretKeySpec. key algo))
     (.doFinal mac data)))
 
-(defn get-current-date-time-in-rfc-1123
+(defn get-current-date-time-in-http-date-header-format
   []
   (.format
    (ZonedDateTime/now ZoneOffset/UTC)
-   DateTimeFormatter/RFC_1123_DATE_TIME))
+   (.withZone
+    (DateTimeFormatter/ofPattern
+     "EEE, dd MMM yyyy HH:mm:ss z"
+     Locale/ENGLISH)
+    (ZoneId/of "GMT"))))
 
 (defn parse-rfc-1123-date
   [s]
