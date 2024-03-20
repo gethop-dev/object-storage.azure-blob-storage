@@ -1,4 +1,4 @@
-(defproject dev.gethop/object-storage.azure-blob-storage "0.1.2-SNAPSHOT"
+(defproject dev.gethop/object-storage.azure-blob-storage "0.1.2"
   :description "A Duct library for managing objects in Azure Blob Storage"
   :url "https://github.com/gethop-dev/object-storage.azure-blob-storage"
   :license {:name "Mozilla Public Licence 2.0"

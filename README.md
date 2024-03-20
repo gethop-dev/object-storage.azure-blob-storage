@@ -285,6 +285,10 @@ user> (object-storage/get-object-url record "object-id")
     - `:content-disposition`: Specifies the value that will be
       included in the "Content-Disposition" header. Has to be either
       `:inline` or `:attachment`. Defaults to `:attachment`.
+    - `:object-public-url?`: A boolean that specifies if the URL returned by this function should be a publicly accessible one (if set to a truthy value) or a pre-signed URL (if set to a falsy value). If set to a truthy value, the object should be publicly accessible for the returned URL to work. This key is optional and, if not specified, defaults to a falsy value.<br>Due to Azure's lack of compatibility, if this key is set to a truthy value these other keys will be ignored:
+      - `:filename`
+      - `:content-type`
+      - `:content-disposition`
 * return value: a map with the following keys:
   - `:success?`: boolean stating if the operation was successful or not.
   - `:object-url`: If the operation was successful, this key contains
