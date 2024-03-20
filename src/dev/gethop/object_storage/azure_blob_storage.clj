@@ -145,21 +145,27 @@
    (DateTimeFormatter/ofPattern "YYYY-MM-dd'T'HH:mm:ss'Z'")))
 
 (defn- get-object-url*
-  [{:keys [account container presigned-url-lifespan]} object-id opts]
-  (let [signed {:version "2020-12-06"
-                :resource "b"
-                :protocol "https"}
-        policy {:expiry (build-object-url-expire-opt presigned-url-lifespan)
-                :permissions (build-object-url-permissions-opts (:method opts))}
-        content-disposition (build-object-url-content-disposition-opt opts)
-        response-headers (-> (select-keys opts (keys sas/response-headers-opt-mapping))
-                             (assoc :content-disposition content-disposition)
-                             (update :content-type #(or % "application/octet-stream")))
-        url (sas/build-presigned-url
-             signed policy response-headers
-             account container {:id object-id})]
+  [{:keys [account container presigned-url-lifespan]} object-id
+   {:keys [object-public-url?]
+    :or {object-public-url? false}
+    :as opts}]
+  (if object-public-url?
     {:success? true
-     :object-url url}))
+     :object-url (util/build-resource-url account container object-id)}
+    (let [signed {:version "2020-12-06"
+                  :resource "b"
+                  :protocol "https"}
+          policy {:expiry (build-object-url-expire-opt presigned-url-lifespan)
+                  :permissions (build-object-url-permissions-opts (:method opts))}
+          content-disposition (build-object-url-content-disposition-opt opts)
+          response-headers (-> (select-keys opts (keys sas/response-headers-opt-mapping))
+                               (assoc :content-disposition content-disposition)
+                               (update :content-type #(or % "application/octet-stream")))
+          url (sas/build-presigned-url
+               signed policy response-headers
+               account container {:id object-id})]
+      {:success? true
+       :object-url url})))
 
 (defn- xml-search-tag-content
   [tag xml-data]
