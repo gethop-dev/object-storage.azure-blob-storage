@@ -217,13 +217,19 @@
                  :as :stream}
         {:keys [status] :as result} (make-request request authorization-header)]
     (if (and status (<= 200 status 299))
-      (let [parsed-body (xml/parse (:body result))]
-        {:success? true
-         :blobs (->> (:content parsed-body)
-                     (xml-search-tag-content :Blobs))
-         :next-marker (->> (:content parsed-body)
-                           (xml-search-tag-content :NextMarker)
-                           (first))})
+      (try
+        (let [parsed-body (xml/parse (:body result) :supporting-external-entities false)]
+          {:success? true
+           :blobs (->> (:content parsed-body)
+                       (xml-search-tag-content :Blobs))
+           :next-marker (->> (:content parsed-body)
+                             (xml-search-tag-content :NextMarker)
+                             (first))})
+        (catch Throwable _
+          {:success? false
+           :error-details (-> result
+                              (dissoc :opts)
+                              (assoc :error :could-not-parse-response-body))}))
       {:success? false
        :error-details (dissoc result :opts)})))
 
