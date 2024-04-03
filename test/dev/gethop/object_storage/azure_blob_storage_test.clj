@@ -60,6 +60,14 @@
                (digest/sha-256 (:object get-result))))))
     (core/delete-object record file-key)))
 
+(deftest ^:integration get-error-test
+  (let [record (azure-blob-storage/init-record config)]
+    (testing "testing non existing get-object"
+      (let [file-key "non-existing-key"
+            get-result (core/get-object record file-key)]
+        (is (false? (:success? get-result)))
+        (is (string? (get-in get-result [:error-details :body])))))))
+
 (deftest ^:integration put-get-stream-test
   (let [record (azure-blob-storage/init-record config)
         file-key (str "integration-test-" (UUID/randomUUID))

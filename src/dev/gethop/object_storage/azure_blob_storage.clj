@@ -85,6 +85,15 @@
       {:success? false
        :error-details (dissoc result :opts)})))
 
+(defn- xml-input-stream->xml-string
+  [result-body]
+  (try
+    (-> result-body
+        (xml/parse :supporting-external-entities false)
+        (xml/emit-str))
+    (catch Throwable _
+      nil)))
+
 (defn- get-object*
   [{:keys [account container]} object-id _opts]
   (let [headers {:x-ms-version "2019-02-02"
@@ -95,13 +104,17 @@
         request {:url (util/build-resource-url account container object-id)
                  :query-params params
                  :method :get
-                 :headers headers}
+                 :headers headers
+                 :as :stream}
         {:keys [status] :as result} (make-request request authorization-header)]
     (if (and status (<= 200 status 299))
       {:success? true
        :object (:body result)}
       {:success? false
-       :error-details (dissoc result :opts)})))
+       :error-details (-> result
+                          (dissoc :opts)
+                          (update :body #(or (xml-input-stream->xml-string %)
+                                             "Empty or unreadable body")))})))
 
 (defn- delete-object*
   [{:keys [account container]} object-id opts]
