@@ -5,6 +5,11 @@ file. This change log follows the conventions of
 
 ## [Unreleased]
 
+## [0.1.3] - 2024-04-03
+### Fixed
+- Fix get-object sometimes returning object as text (Issue #2)
+- Don't parse external entities when reading XML
+
 ## [0.1.2] - 2024-03-20
 ### Added
 - Add option to get public object url
@@ -16,7 +21,8 @@ file. This change log follows the conventions of
 ## [0.1.0] - 2023-10-27
 - Initial version
 
-[Unreleased]: https://github.com/gethop-dev/object-storage.azure-blob-storage/compare/v0.1.2...HEAD
+[Unreleased]: https://github.com/gethop-dev/object-storage.azure-blob-storage/compare/v0.1.3...HEAD
+[0.1.3]: https://github.com/gethop-dev/object-storage.azure-blob-storage/releases/tag/v0.1.3
 [0.1.2]: https://github.com/gethop-dev/object-storage.azure-blob-storage/releases/tag/v0.1.2
 [0.1.1]: https://github.com/gethop-dev/object-storage.azure-blob-storage/releases/tag/v0.1.1
 [0.1.0]: https://github.com/gethop-dev/object-storage.azure-blob-storage/releases/tag/v0.1.0
