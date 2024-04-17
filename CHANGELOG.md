@@ -5,7 +5,7 @@ file. This change log follows the conventions of
 
 ## [Unreleased]
 
-## [0.1.3] - 2024-04-03
+## [0.1.3] - 2024-04-17
 ### Fixed
 - Fix get-object sometimes returning object as text (Issue #2)
 - Don't parse external entities when reading XML
