@@ -7,6 +7,9 @@ file. This change log follows the conventions of
 ### Fixed
 - Correctly handle special URL characters when building resource URLs
 
+### Changed
+- Updated dependencies to latest stable versions
+
 ## [0.1.3] - 2024-04-17
 ### Fixed
 - Fix get-object sometimes returning object as text (Issue #2)
