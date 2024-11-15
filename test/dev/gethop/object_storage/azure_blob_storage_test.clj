@@ -20,6 +20,8 @@
 (def test-file-1-path "test-file-1")
 (def test-file-2-path "test-file-2")
 
+(def url-problematic-characters " ?+=,&%")
+
 (defn setup []
   (spit test-file-1-path {:hello :world})
   (spit test-file-2-path [:apples :bananas]))
@@ -47,7 +49,7 @@
 
 (deftest ^:integration put-get-file-test
   (let [record (azure-blob-storage/init-record config)
-        file-key (str "integration-test-" (UUID/randomUUID))
+        file-key (str "integration-test-" url-problematic-characters "-" (UUID/randomUUID))
         file (io/file test-file-1-path)]
     (testing "testing put-object"
       (let [put-result (core/put-object record file-key file)]
@@ -70,7 +72,7 @@
 
 (deftest ^:integration put-get-stream-test
   (let [record (azure-blob-storage/init-record config)
-        file-key (str "integration-test-" (UUID/randomUUID))
+        file-key (str "integration-test-" url-problematic-characters "-" (UUID/randomUUID))
         file (io/file test-file-1-path)]
     (testing "testing put-object stream"
       (let [opts {:metadata {:object-size (.length file)}}
@@ -91,7 +93,7 @@
 
 (deftest ^:integration replace-object-test
   (let [record (azure-blob-storage/init-record config)
-        file-key (str "integration-test-" (UUID/randomUUID))
+        file-key (str "integration-test-" url-problematic-characters "-" (UUID/randomUUID))
         file-1 (io/file test-file-1-path)
         file-2 (io/file test-file-2-path)]
     (testing "testing replace object is succesfull"
@@ -107,7 +109,7 @@
 
 (deftest ^:integration copy-get-file-test
   (let [record (azure-blob-storage/init-record config)
-        src-key (str "integration-test-" (UUID/randomUUID))
+        src-key (str "integration-test-" url-problematic-characters "-" (UUID/randomUUID))
         file (io/file test-file-1-path)]
     (testing "testing put-object"
       (let [put-result (core/put-object record src-key file)]
@@ -125,7 +127,7 @@
 
 (deftest ^:integration delete-test
   (let [record (azure-blob-storage/init-record config)
-        file-key (str "integration-test-" (UUID/randomUUID))
+        file-key (str "integration-test-" url-problematic-characters "-" (UUID/randomUUID))
         file (io/file test-file-1-path)]
     (testing "testing delete-object for object that doesn't exist"
       (let [delete-result (core/delete-object record file-key)]
@@ -140,7 +142,7 @@
 
 (deftest ^:integration presigned-url-test
   (let [record (azure-blob-storage/init-record config)
-        file-key (str "integration-test-" (UUID/randomUUID))
+        file-key (str "integration-test-" url-problematic-characters "-" (UUID/randomUUID))
         file (io/file test-file-1-path)]
     (core/put-object record file-key file)
     (testing "testing default presigned url (defaults to :read operation)"
@@ -189,8 +191,8 @@
 
 (deftest ^:integration list-test
   (let [record (azure-blob-storage/init-record config)
-        file-key-1 (str "integration-test/integration-test-" (UUID/randomUUID))
-        file-key-2 (str "integration-test-2/integration-test-" (UUID/randomUUID))
+        file-key-1 (str "integration-test/integration-test-" url-problematic-characters "-" (UUID/randomUUID))
+        file-key-2 (str "integration-test-2/integration-test-" url-problematic-characters "-" (UUID/randomUUID))
         file-1 (io/file test-file-1-path)
         file-2 (io/file test-file-2-path)]
     (core/put-object record file-key-1 file-1)
@@ -213,8 +215,8 @@
 
 (deftest ^:integration non-ascii-object-ids-test
   (let [record (azure-blob-storage/init-record config)
-        file-base "integration-test-with-ñ$#@|¿?+*-characters-"
-        file-key (str file-base (UUID/randomUUID))
+        file-base "integration-test-with-ñ¿àÇ-characters-"
+        file-key (str file-base url-problematic-characters "-" (UUID/randomUUID))
         file (io/file test-file-1-path)]
     (testing "testing create with non ascii characters"
       (let [put-result (core/put-object record file-key file)]

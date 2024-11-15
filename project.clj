@@ -8,7 +8,8 @@
                  [integrant "0.8.1"]
                  [http-kit/http-kit "2.7.0"]
                  [dev.gethop/object-storage.core "0.1.5"]
-                 [org.clojure/data.xml "0.0.8"]]
+                 [org.clojure/data.xml "0.0.8"]
+                 [ring/ring-codec "1.2.0"]]
   :deploy-repositories [["snapshots" {:url "https://clojars.org/repo"
                                       :username :env/CLOJARS_USERNAME
                                       :password :env/CLOJARS_PASSWORD

@@ -4,6 +4,8 @@ file. This change log follows the conventions of
 [keepachangelog.com](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Fixed
+- Correctly handle special URL characters when building resource URLs
 
 ## [0.1.3] - 2024-04-17
 ### Fixed

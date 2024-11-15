@@ -3,8 +3,8 @@
 ;; file, You can obtain one at http://mozilla.org/MPL/2.0/
 
 (ns dev.gethop.object-storage.azure-blob-storage.util
-  (:import [java.net URLEncoder]
-           [java.time ZonedDateTime ZoneOffset ZoneId]
+  (:require [ring.util.codec :as ring.codec])
+  (:import [java.time ZonedDateTime ZoneOffset ZoneId]
            [java.time.format DateTimeFormatter]
            [java.util Base64 Locale]
            [javax.crypto Mac]
@@ -52,7 +52,7 @@
 
 (defn url-encode-str
   [^String s]
-  (URLEncoder/encode s "UTF-8"))
+  (ring.codec/url-encode s "UTF-8"))
 
 (defn build-resource-url
   ([account container]
