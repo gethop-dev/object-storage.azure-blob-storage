@@ -4,6 +4,8 @@ file. This change log follows the conventions of
 [keepachangelog.com](http://keepachangelog.com/).
 
 ## [Unreleased]
+
+## [0.1.4] - 2024-11-15
 ### Fixed
 - Correctly handle special URL characters when building resource URLs
 
@@ -26,7 +28,8 @@ file. This change log follows the conventions of
 ## [0.1.0] - 2023-10-27
 - Initial version
 
-[Unreleased]: https://github.com/gethop-dev/object-storage.azure-blob-storage/compare/v0.1.3...HEAD
+[Unreleased]: https://github.com/gethop-dev/object-storage.azure-blob-storage/compare/v0.1.4...HEAD
+[0.1.4]: https://github.com/gethop-dev/object-storage.azure-blob-storage/releases/tag/v0.1.4
 [0.1.3]: https://github.com/gethop-dev/object-storage.azure-blob-storage/releases/tag/v0.1.3
 [0.1.2]: https://github.com/gethop-dev/object-storage.azure-blob-storage/releases/tag/v0.1.2
 [0.1.1]: https://github.com/gethop-dev/object-storage.azure-blob-storage/releases/tag/v0.1.1
