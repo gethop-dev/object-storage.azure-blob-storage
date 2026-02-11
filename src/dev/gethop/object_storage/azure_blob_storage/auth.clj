@@ -8,14 +8,21 @@
 
 (defn- build-canonicalized-header-string
   [headers]
-  (->> headers
-       (keys)
-       (map (comp str/lower-case name))
-       (filter #(str/starts-with? % "x-ms-"))
-       (sort)
-       ;; TODO Replace any linear whitespace
-       (map #(str % ":" (get headers (keyword %))))
-       (str/join "\n")))
+  (let [header-name-fn (comp str/lower-case name)
+        xf (comp (map (fn [[header s]]
+                        [(header-name-fn header) s]))
+                 (filter (fn [kv-pair]
+                           (str/starts-with? (first kv-pair) "x-ms-")))
+                 ;; Replace linear whitespace
+                 (map (fn [[header s]]
+                        (str header ":"
+                             (str/replace (str/trim s)
+                                          #"[ \n\t]+"
+                                          " ")))))
+        canonicalized-headers (into [] xf headers)]
+    (->> canonicalized-headers
+         (sort)
+         (str/join "\n"))))
 
 (defn- build-canonicalized-resource-string
   [account container object]
