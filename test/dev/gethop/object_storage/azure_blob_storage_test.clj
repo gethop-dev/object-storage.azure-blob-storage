@@ -11,7 +11,7 @@
             [org.httpkit.client :as http])
   (:import (java.io InputStream
                     File)
-           (java.net URL)
+           (java.net URI)
            (java.util UUID)))
 
 (def config {:account {:connection-string (System/getenv "TEST_AZURE_BLOB_STORAGE_ACCOUNT_CONNECTION_STRING")}
@@ -211,7 +211,7 @@
             url (:object-url result)]
         (is (:success? result))
         (is (string? url))
-        (is (URL. url))
+        (is (URI. url))
         (is (= (digest/sha-256 file)
                (digest/sha-256 (:body (http-request {:url url :method :get})))))))
     (testing "testing default presigned url for :create method"
@@ -225,7 +225,7 @@
             get-result (core/get-object record new-file-key)]
         (is (:success? get-url-result))
         (is (string? url))
-        (is (URL. url))
+        (is (URI. url))
         (is (not= :not-2xx create-result))
         (is (:success? get-result))
         (is (= (digest/sha-256 file)
@@ -236,7 +236,7 @@
             url (:object-url result)]
         (is (:success? result))
         (is (string? url))
-        (is (URL. url))
+        (is (URI. url))
         (is (= :not-2xx
                (http-request {:url url :method :get})))))
     (testing "testing :read presigned url with specific filename"
