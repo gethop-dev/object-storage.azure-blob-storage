@@ -4,6 +4,9 @@ file. This change log follows the conventions of
 [keepachangelog.com](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Changed
+- Upgraded linting and testing dependencies to latest stable versions, and Java version to 21 (for tests).
+- Upgraded github Actions dependencies.
 
 ## [0.1.4] - 2024-11-15
 ### Fixed
