@@ -264,7 +264,7 @@
    :size (->> (xml-search-tag-content :Properties content)
               (xml-search-tag-content :Content-Length)
               (first)
-              (Integer/parseInt))
+              (Long/parseLong))
    :last-modified (->> (xml-search-tag-content :Properties content)
                        (xml-search-tag-content :Last-Modified)
                        (first)
