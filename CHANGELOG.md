@@ -5,8 +5,10 @@ file. This change log follows the conventions of
 
 ## [Unreleased]
 ### Changed
-- Upgraded linting and testing dependencies to latest stable versions, and Java version to 21 (for tests).
 - Upgraded github Actions dependencies.
+- Upgraded linting and testing dependencies to latest stable versions, and Java version to 21 (for tests).
+- Upgraded Clojure version to 1.12.4 and spec.alpha to 0.5.238.
+- Upgraded to object-storage.core 0.1.8
 
 ## [0.1.4] - 2024-11-15
 ### Fixed
