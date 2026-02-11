@@ -12,9 +12,10 @@
             [dev.gethop.object-storage.core :as core]
             [integrant.core :as ig]
             [org.httpkit.client :as http])
-  (:import [java.io File]
-           [java.time ZonedDateTime ZoneOffset]
-           [java.time.format DateTimeFormatter]))
+  (:import (java.io File)
+           (java.time ZonedDateTime
+                      ZoneOffset)
+           (java.time.format DateTimeFormatter)))
 
 (def ^:const default-presigned-url-lifespan
   "Default presigned urls lifespan, expressed in minutes"

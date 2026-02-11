@@ -9,9 +9,10 @@
             [dev.gethop.object-storage.azure-blob-storage :as azure-blob-storage]
             [dev.gethop.object-storage.core :as core]
             [org.httpkit.client :as http])
-  (:import [java.io InputStream]
-           [java.net URL]
-           [java.util UUID]))
+  (:import (java.io InputStream
+                    File)
+           (java.net URL)
+           (java.util UUID)))
 
 (def config {:account {:connection-string (System/getenv "TEST_AZURE_BLOB_STORAGE_ACCOUNT_CONNECTION_STRING")}
              :container {:name (System/getenv "TEST_AZURE_BLOB_STORAGE_CONTAINER_NAME")}
