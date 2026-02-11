@@ -21,6 +21,19 @@
   "Default presigned urls lifespan, expressed in minutes"
   60)
 
+(def ^:private metadata-headers->request-headers
+  {:content-type :Content-Type
+   :content-disposition :x-ms-blob-content-disposition
+   :content-encoding :Content-Encoding
+   :content-length :Content-Length})
+
+(def ^:private supported-content-headers
+  (into [] (keys metadata-headers->request-headers)))
+
+(def ^:private supported-metadata
+  (into supported-content-headers
+        [:filename]))
+
 (defn- connection-string->account
   [connection-string]
   (-> (->> (str/split connection-string #";")
@@ -110,7 +123,12 @@
         {:keys [status] :as result} (make-request request authorization-header)]
     (if (and status (<= 200 status 299))
       {:success? true
-       :object (:body result)}
+       :object (:body result)
+       :metadata (-> (:headers result)
+                     (select-keys supported-metadata)
+                     (set/rename-keys {:content-length :object-size})
+                     (update :object-size (fn [s]
+                                            (Long/parseLong s))))}
       {:success? false
        :error-details (-> result
                           (dissoc :opts)

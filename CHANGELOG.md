@@ -4,6 +4,9 @@ file. This change log follows the conventions of
 [keepachangelog.com](http://keepachangelog.com/).
 
 ## [Unreleased]
+### Added
+- Added `:metadata` key as a required value (that may be nil) in the map returned by `get-object`, when successfully executed.
+
 ### Changed
 - Upgraded github Actions dependencies.
 - Upgraded linting and testing dependencies to latest stable versions, and Java version to 21 (for tests).
