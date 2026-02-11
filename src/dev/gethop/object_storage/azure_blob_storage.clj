@@ -118,23 +118,26 @@
 
 (defn- copy-object*
   [{:keys [account container]} source-object-id destination-object-id _opts]
-  (let [src-url (util/build-resource-url account container source-object-id)
-        dst-url (util/build-resource-url account container destination-object-id)
-        headers {:x-ms-version "2019-02-02"
-                 :x-ms-date (util/get-current-date-time-in-http-date-header-format)
-                 :x-ms-copy-source src-url}
-        params {}
-        authorization-header (auth/build-authorization-header
-                              :put params headers account container {:id destination-object-id})
-        request {:url dst-url
-                 :query-params params
-                 :method :put
-                 :headers headers}
-        {:keys [status] :as result} (make-request request authorization-header)]
-    (if (and status (<= 200 status 299))
-      {:success? true}
-      {:success? false
-       :error-details (dissoc result :opts)})))
+  (if (= source-object-id destination-object-id)
+    ;; Copying object to itself. No need to do anything.
+    {:success? true}
+    (let [src-url (util/build-resource-url account container source-object-id)
+          dst-url (util/build-resource-url account container destination-object-id)
+          headers {:x-ms-version "2019-02-02"
+                   :x-ms-date (util/get-current-date-time-in-http-date-header-format)
+                   :x-ms-copy-source src-url}
+          params {}
+          authorization-header (auth/build-authorization-header
+                                :put params headers account container {:id destination-object-id})
+          request {:url dst-url
+                   :query-params params
+                   :method :put
+                   :headers headers}
+          {:keys [status] :as result} (make-request request authorization-header)]
+      (if (and status (<= 200 status 299))
+        {:success? true}
+        {:success? false
+         :error-details (dissoc result :opts)}))))
 
 (defn- xml-input-stream->xml-string
   [result-body]

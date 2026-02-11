@@ -13,6 +13,7 @@ file. This change log follows the conventions of
 - Upgraded linting and testing dependencies to latest stable versions, and Java version to 21 (for tests).
 - Upgraded Clojure version to 1.12.4 and spec.alpha to 0.5.238.
 - Upgraded to object-storage.core 0.1.8
+- copy-object no longer returns failure when the source object key and the destination object key are the same value. It does nothing and returns success.
 
 ## [0.1.4] - 2024-11-15
 ### Fixed
