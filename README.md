@@ -15,6 +15,7 @@ protocol. It provides optional [Integrant][] keys.
   * [Get Object URL](#get-object-url)
   * [List Objects](#list-objects)
   * [Delete Object](#delete-object)
+  * [Rename Object](#rename-object)
 * [Testing](#testing)
 * [License](#license)
 
@@ -408,6 +409,34 @@ user> (object-storage/delete-object record "non-existing-object-id")
    :x-ms-version "2019-02-02"},
   :status 404}}
 ```
+
+#### `rename-object`
+
+##### `(rename-object object-storage-record source-object-id destination-object-id)`
+
+
+* description: Renames an object from Azure Blob Storage into the same Container.
+* parameters:
+  - `record`: An `AzureBlobStorage` record.
+  - `source-object-id`: The key of the object in the Azure Blob
+    Storage Container that we want to rename.
+  - `destination-object-id`: The new key the object will have in Azure
+    Blob Storage Container after the renaming.
+* return value: a map with the following keys:
+  - `:success?`: boolean stating if the operation was successful or
+    not.
+  - `:error-details`: map with additional details on the problem
+    encountered while trying to rename the object. This key is only
+    present if `:success?` is `false`.
+
+Let's see an example for a successful invocation:
+
+```clj
+user> (object-storage/rename-object object-storage-record "some-existing-source-key" "new-destination-key")
+{:success? true}
+```
+
+Renaming a bucket key to itself using this method is a no-op, and always succeeds.
 
 ## Testing
 

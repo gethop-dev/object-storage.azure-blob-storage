@@ -194,6 +194,19 @@
       {:success? false
        :error-details (dissoc result :opts)})))
 
+(defn- rename-object*
+  [this object-id new-object-id]
+  ;; Azure Blob Storage does not have a rename operation. The
+  ;; recommended way it to copy the object key to the new key, and
+  ;; then delete the original key.
+  (if (= object-id new-object-id)
+    ;; Renaming object to itself. No need to do anything.
+    {:success? true}
+    (let [result (copy-object* this object-id new-object-id {})]
+      (if-not (:success? result)
+        result
+        (delete-object* this object-id {})))))
+
 (defn- build-object-url-permissions-opts
   [method]
   (case method
@@ -343,6 +356,9 @@
     (delete-object* this object-id {}))
   (delete-object [this object-id opts]
     (delete-object* this object-id opts))
+
+  (rename-object [this object-id new-object-id]
+    (rename-object* this object-id new-object-id))
 
   (list-objects [this parent-object-id]
     (list-objects* this parent-object-id)))

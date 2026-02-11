@@ -245,10 +245,36 @@
             get-result (http-request {:url url :method :get})]
         (is (:success? get-url-result))
         (is (string? url))
-        (is (URL. url))
+        (is (URI. url))
         (is (=  "attachment; filename=test.docx"
                 (get-in get-result [:headers :content-disposition])))))
     (core/delete-object record file-key)))
+
+(deftest ^:integration rename-get-file-test
+  (let [record (azure-blob-storage/init-record config)
+        src-key (str "integration-test-" (UUID/randomUUID))
+        dst-key (str "integration-test-" (UUID/randomUUID))
+        put-result (core/put-object record src-key (io/file test-file-1-path))]
+    (testing "testing put-object"
+      (is (:success? put-result)))
+    (testing "Successful rename and get object"
+      (let [rename-result (core/rename-object record src-key dst-key)]
+        (testing "testing rename-object"
+          (is (:success? rename-result)))
+        (testing "testing get-object on destination object"
+          (let [get-result (core/get-object record dst-key)]
+            (is (:success? get-result))
+            (is (= (digest/sha-256 (File. ^String test-file-1-path))
+                   (digest/sha-256 (:object get-result))))))
+        (testing "testing get-object on source object"
+          (let [get-result (core/get-object record src-key)]
+            (is (not (:success? get-result)))
+            (is (= 404 (-> get-result :error-details :status)))))))
+    (testing "Renaming file to itself also works (but does nothing)"
+      (let [src-key dst-key
+            rename-result (core/rename-object record src-key dst-key)]
+        (is (:success? rename-result))))
+    (core/delete-object record dst-key)))
 
 (deftest ^:integration list-test
   (let [record (azure-blob-storage/init-record config)
