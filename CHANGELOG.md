@@ -4,6 +4,8 @@ file. This change log follows the conventions of
 [keepachangelog.com](http://keepachangelog.com/).
 
 ## [Unreleased]
+
+## [0.1.5] - 2026-02-11
 ### Added
 - Added `:metadata` key as a required value (that may be nil) in the map returned by `get-object`, when successfully executed.
 - Added new metadata options for `put-object` method: `:content-type`, `:content-disposition`, `:content-encoding` and `:filename` options.
@@ -39,7 +41,8 @@ file. This change log follows the conventions of
 ## [0.1.0] - 2023-10-27
 - Initial version
 
-[Unreleased]: https://github.com/gethop-dev/object-storage.azure-blob-storage/compare/v0.1.4...HEAD
+[Unreleased]: https://github.com/gethop-dev/object-storage.azure-blob-storage/compare/v0.1.5...HEAD
+[0.1.5]: https://github.com/gethop-dev/object-storage.azure-blob-storage/releases/tag/v0.1.5
 [0.1.4]: https://github.com/gethop-dev/object-storage.azure-blob-storage/releases/tag/v0.1.4
 [0.1.3]: https://github.com/gethop-dev/object-storage.azure-blob-storage/releases/tag/v0.1.3
 [0.1.2]: https://github.com/gethop-dev/object-storage.azure-blob-storage/releases/tag/v0.1.2
