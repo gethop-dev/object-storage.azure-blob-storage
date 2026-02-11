@@ -92,6 +92,66 @@
                (digest/sha-256 (:object get-result))))))
     (core/delete-object record file-key)))
 
+(deftest ^:integration put-get-with-content-disposition-content-type-test
+  (let [record (azure-blob-storage/init-record config)
+        file-key-attachment (str "integration-tests/nested/directory/integration-test-" url-problematic-characters "-" (UUID/randomUUID))
+        file-key-inline (str "integration-tests/nested/directory/integration-test-" url-problematic-characters "-" (UUID/randomUUID))
+        file (io/file test-file-1-path)
+        filename "not-object-key-filename"
+        metadata {:object-size (.length file)
+                  :content-type "image/png"
+                  :filename filename}]
+    (testing "testing put object as attachment"
+      (let [metadata (assoc metadata :content-disposition :attachment)
+            stream (io/input-stream file)
+            put-result (core/put-object record
+                                        file-key-attachment
+                                        stream
+                                        {:metadata metadata})]
+        (is (:success? put-result))
+        (testing "testing get object stream with object metadata for attachment content disposition"
+          (let [get-result (core/get-object record file-key-attachment)]
+            (is (:success? get-result))
+            (is (= (digest/sha-256 file)
+                   (digest/sha-256 (slurp (:object get-result)))))
+            ;; content-disposition is a keyword for the pub-object
+            ;; request (to indicate what kind of content-disposition
+            ;; we want), but it's the full content-disposition HTTP
+            ;; header in the get-object response. Thus, we need to
+            ;; compare those two things accordingly.
+            (is (= (->  metadata
+                        (assoc :content-disposition
+                               (#'azure-blob-storage/content-disposition-header filename :attachment))
+                        (dissoc :filename))
+                   (:metadata get-result)))
+            (is (re-find #"^attachment;" (-> get-result :metadata :content-disposition)))))))
+    (testing "testing put object as inline"
+      (let [metadata (assoc metadata :content-disposition :inline)
+            stream (io/input-stream file)
+            put-result (core/put-object record
+                                        file-key-inline
+                                        stream
+                                        {:metadata metadata})]
+        (is (:success? put-result))
+        (testing "testing get object stream with object metadata for inline content disposition"
+          (let [get-result (core/get-object record file-key-inline)]
+            (is (:success? get-result))
+            (is (= (digest/sha-256 file)
+                   (digest/sha-256 (slurp (:object get-result)))))
+            ;; content-disposition is a keyword for the pub-object
+            ;; request (to indicate what kind of content-disposition
+            ;; we want), but it's the full content-disposition HTTP
+            ;; header in the get-object response. Thus, we need to
+            ;; compare those two things accordingly.
+            (is (= (->  metadata
+                        (assoc :content-disposition
+                               (#'azure-blob-storage/content-disposition-header filename :inline))
+                        (dissoc :filename))
+                   (:metadata get-result)))
+            (is (re-find #"^inline" (-> get-result :metadata :content-disposition)))))))
+    (doseq [file-key [file-key-attachment file-key-inline]]
+      (core/delete-object record file-key))))
+
 (deftest ^:integration replace-object-test
   (let [record (azure-blob-storage/init-record config)
         file-key (str "integration-test-" url-problematic-characters "-" (UUID/randomUUID))

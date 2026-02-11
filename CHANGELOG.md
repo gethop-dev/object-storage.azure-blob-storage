@@ -6,6 +6,7 @@ file. This change log follows the conventions of
 ## [Unreleased]
 ### Added
 - Added `:metadata` key as a required value (that may be nil) in the map returned by `get-object`, when successfully executed.
+- Added new metadata options for `put-object` method: `:content-type`, `:content-disposition`, `:content-encoding` and `:filename` options.
 
 ### Changed
 - Upgraded github Actions dependencies.

@@ -50,6 +50,10 @@
    {}
    m))
 
+(defn percent-encode-str
+  [^String s]
+  (ring.codec/percent-encode s "UTF-8"))
+
 (defn url-encode-str
   [^String s]
   (ring.codec/url-encode s "UTF-8"))

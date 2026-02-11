@@ -125,14 +125,26 @@ user> (object-storage/put-object record "object-id" (io/file "some-existing-file
   - `record`: An `AzureBlobStorage` record.
   - `object-id`: The name/path of the Blob  to upload.
   - `object`: The file to upload. It can be either a
-    `java.io.File`-compatible value or an
+    `java.io.File`-compatible value, or an
     `java.io.InputStream`-compatible value. In the latter case, if you
     know the size of the content in the InputStream, add the
-    `:metadata` key to the `opts` map.
-* return value: a map with the following keys:
-- `opts: A map of options. Currently supported option keys are:
+    `:metadata` key to the `opts` map, setting the `:object-size` key
+    with the size of the InputStream content.
+  - `opts: A map of options. Currently supported option keys are:
     - `metadata`: It is a map with the following supported keys:
       - `:object-size`: The size, in bytes, of the `object` passed in as an InputStream.
+      - `:content-type`: The value for the `Content-Type` header that
+        will be used, unless overridden, when downloading the object.
+      - `:content-disposition`: A keyword wit the type of
+        `Content-Disposition` header that will be used, unless
+        overridden, when downloading the object. It can be eiher
+        `:inline` or `attachment`.
+      - `:content-encoding`: The value for the `Content-Type` header
+        that will be used, unless overridden, when downloading the
+        object.
+      - `:filename`: The value for the file name that will be used,
+        unless overridden, when downloading the object.
+* return value: a map with the following keys:
   - `:success?`: boolean stating if the operation was successful or not.
   - `:error-details`: a map with additional details on the problem
     encountered while trying to upload the object.
@@ -146,6 +158,27 @@ user> (let [object-content (.getBytes "Test")
                                    "object-id"
                                    (io/input-stream object-content)
                                    {:metadata {:object-size object-size}}))
+{:success? true}
+```
+
+A second example to show how to upload an object (again, as an mocked
+InputStream), and set the Content-Type and Content-Disposition headers
+for the retrieval of the object. In this case we want the retrieval
+operation to offer the end-user to save the content of the object as a
+file, instead of directly trying to open or diplay it. We set the
+Content-Type header to "image/png", and the file name to
+"some-image.png:
+
+```clj
+user> (let [object-content (.getBytes "Test")
+            object-size (count object-content)]
+        (object-storage/put-object record
+                                   "object-id"
+                                   (io/input-stream object-content)
+                                   {:metadata {:object-size object-size
+                                               :content-disposition :attachment
+                                               :content-type "image/png"
+                                               :filename "some-image.png"}}))
 {:success? true}
 ```
 

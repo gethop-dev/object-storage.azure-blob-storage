@@ -53,18 +53,55 @@
       (http/request)
       (deref)))
 
+(defn- content-disposition-header
+  [filename content-disposition-type]
+  (str
+   (case content-disposition-type
+     :attachment "attachment"
+     :inline "inline")
+   "; filename*=UTF-8''" (util/percent-encode-str filename)))
+
+(defn- object-key->filename
+  "Try to infer a filename from the object key.
+
+  The `/` character is the separator of the object-key \"parts\". Thus
+  the last part must be what's intented to be the filename of the
+  object..
+
+  Things can become quite complicated if object-key contains the `.`
+  or `..` prefixes, or consecutive `/` characters, or when the
+  object-key ends in a trailing `/`.  But sane object-keys shouldn't
+  contain such edge cases. So we apply a naïve strategy."
+  [object-key]
+  (peek (str/split object-key #"/+")))
+
 (defn- put-object*
   [{:keys [account container]} object-id object opts]
-  (let [content-length (or
-                        (get-in opts [:metadata :object-size])
+  (let [metadata (-> (:metadata opts)
+                     (set/rename-keys {:object-size :content-length})
+                     (select-keys supported-metadata))
+        content-length (or
+                        (:content-length metadata)
                         (and (instance? File object) (.length ^File object)))]
     (if-not content-length
       {:success? false
        :error-details {:reason :could-not-determine-content-length}}
-      (let [headers {:x-ms-version "2019-02-02"
-                     :x-ms-date (util/get-current-date-time-in-http-date-header-format)
-                     :x-ms-blob-type "BlockBlob"
-                     :Content-Length content-length}
+      (let [filename (or (:filename metadata)
+                         (object-key->filename object-id))
+            update-fn (fnil (partial content-disposition-header filename)
+                            ;; "inline" content-disposition is the default so
+                            ;; setting it when not passed in as an argument is
+                            ;; idempotent, but simplifies things.
+                            :inline)
+            content-headers (-> metadata
+                                (select-keys supported-content-headers)
+                                (update :content-disposition update-fn)
+                                (assoc :content-length content-length)
+                                (set/rename-keys metadata-headers->request-headers))
+            headers (into {:x-ms-version "2019-02-02"
+                           :x-ms-date (util/get-current-date-time-in-http-date-header-format)
+                           :x-ms-blob-type "BlockBlob"}
+                          content-headers)
             params {}
             authorization-header (auth/build-authorization-header
                                   :put params headers account container {:id object-id})
