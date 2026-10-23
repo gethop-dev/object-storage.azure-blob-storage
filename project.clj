@@ -4,7 +4,7 @@
   :license {:name "Mozilla Public Licence 2.0"
             :url "https://www.mozilla.org/en-US/MPL/2.0/"}
   :min-lein-version "2.9.8"
-  :dependencies [[org.clojure/clojure "1.12.4"]
+  :dependencies [[org.clojure/clojure "1.12.6"]
                  [integrant "0.8.1"]
                  [http-kit/http-kit "2.8.1"]
                  [dev.gethop/object-storage.core "0.1.8"]
@@ -25,7 +25,7 @@
    :profiles/dev {}
    :project/dev {:dependencies [[org.clj-commons/digest "1.4.100"]]
                  :plugins [[jonase/eastwood "1.4.3"]
-                           [dev.weavejester/lein-cljfmt "0.13.0"]]
+                           [dev.weavejester/lein-cljfmt "0.16.6"]]
                  :eastwood {:linters [:all]
                             :exclude-linters [:keyword-typos]
                             :debug [:progress :time]}}})
