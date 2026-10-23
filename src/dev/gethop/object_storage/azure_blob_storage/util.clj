@@ -58,6 +58,10 @@
   [^String s]
   (ring.codec/url-encode s "UTF-8"))
 
+(defn url-decode-str
+  [^String s]
+  (ring.codec/url-decode s "UTF-8"))
+
 (defn build-resource-url
   ([account container]
    (format "%s://%s.blob.%s/%s"

@@ -5,6 +5,9 @@ file. This change log follows the conventions of
 
 ## [Unreleased]
 
+### Fixed
+- Fix `get-object-url` for `filename`s that contain non ASCII characters.
+
 ## [0.1.5] - 2026-02-11
 ### Added
 - Added `:metadata` key as a required value (that may be nil) in the map returned by `get-object`, when successfully executed.

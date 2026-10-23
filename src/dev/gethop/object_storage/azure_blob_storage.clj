@@ -219,7 +219,7 @@
   [{:keys [content-disposition filename] :as _response-headers}]
   (cond-> (name (or content-disposition :attachment))
     filename
-    (str "; filename=" filename)))
+    (str "; filename*=UTF-8''" (util/percent-encode-str filename))))
 
 (defn- build-object-url-expire-opt
   [lifespan]

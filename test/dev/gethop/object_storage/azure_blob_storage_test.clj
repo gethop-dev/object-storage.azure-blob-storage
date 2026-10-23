@@ -7,6 +7,7 @@
             [clojure.java.io :as io]
             [clojure.test :refer :all]
             [dev.gethop.object-storage.azure-blob-storage :as azure-blob-storage]
+            [dev.gethop.object-storage.azure-blob-storage.util :as util]
             [dev.gethop.object-storage.core :as core]
             [org.httpkit.client :as http])
   (:import (java.io InputStream
@@ -240,14 +241,35 @@
         (is (= :not-2xx
                (http-request {:url url :method :get})))))
     (testing "testing :read presigned url with specific filename"
-      (let [get-url-result (core/get-object-url record file-key {:filename "test.docx"})
+      (let [filename "test.docx"
+            get-url-result (core/get-object-url record file-key {:filename filename})
             url (:object-url get-url-result)
             get-result (http-request {:url url :method :get})]
         (is (:success? get-url-result))
+        (is (not= :not-2xx get-result))
         (is (string? url))
         (is (URI. url))
-        (is (=  "attachment; filename=test.docx"
-                (get-in get-result [:headers :content-disposition])))))
+        (is (=  "attachment; filename*=UTF-8''%74%65%73%74%2E%64%6F%63%78"
+                (get-in get-result [:headers :content-disposition])))
+        (is (= filename
+               (-> (get-in get-result [:headers :content-disposition])
+                   (subs (count "attachment; filename*=UTF-8''"))
+                   (util/url-decode-str))))))
+    (testing "testing :read presigned url with non ASCII characters in filename"
+      (let [filename "—ó😁"
+            get-url-result (core/get-object-url record file-key {:filename filename})
+            url (:object-url get-url-result)
+            get-result (http-request {:url url :method :get})]
+        (is (:success? get-url-result))
+        (is (not= :not-2xx get-result))
+        (is (string? url))
+        (is (URI. url))
+        (is (=  "attachment; filename*=UTF-8''%E2%80%94%C3%B3%F0%9F%98%81"
+                (get-in get-result [:headers :content-disposition])))
+        (is (= filename
+               (-> (get-in get-result [:headers :content-disposition])
+                   (subs (count "attachment; filename*=UTF-8''"))
+                   (util/url-decode-str))))))
     (core/delete-object record file-key)))
 
 (deftest ^:integration rename-get-file-test
