@@ -5,6 +5,8 @@ file. This change log follows the conventions of
 
 ## [Unreleased]
 
+## [0.1.6] - 2026-02-11
+
 ### Fixed
 - Fix `get-object-url` for `filename`s that contain non ASCII characters.
 
@@ -47,7 +49,8 @@ file. This change log follows the conventions of
 ## [0.1.0] - 2023-10-27
 - Initial version
 
-[Unreleased]: https://github.com/gethop-dev/object-storage.azure-blob-storage/compare/v0.1.5...HEAD
+[Unreleased]: https://github.com/gethop-dev/object-storage.azure-blob-storage/compare/v0.1.6...HEAD
+[0.1.6]: https://github.com/gethop-dev/object-storage.azure-blob-storage/releases/tag/v0.1.6
 [0.1.5]: https://github.com/gethop-dev/object-storage.azure-blob-storage/releases/tag/v0.1.5
 [0.1.4]: https://github.com/gethop-dev/object-storage.azure-blob-storage/releases/tag/v0.1.4
 [0.1.3]: https://github.com/gethop-dev/object-storage.azure-blob-storage/releases/tag/v0.1.3
